@@ -308,7 +308,7 @@ class Command(object):
       derived_projects = {}
       for project in all_projects_list:
         if submodules_ok or project.sync_s:
-          derived_projects.update((p.name, p)
+          derived_projects.update((p.review_name, p)
                                   for p in project.GetDerivedSubprojects())
       all_projects_list.extend(derived_projects.values())
       for project in all_projects_list:
@@ -378,7 +378,7 @@ class Command(object):
     result = []
     patterns = [re.compile(r'%s' % a, re.IGNORECASE) for a in args]
     for project in self.GetProjects('', all_manifests=all_manifests):
-      paths = [project.review_name, project.RelPath(local=not all_manifests)]
+      paths = [project.name, project.RelPath(local=not all_manifests)]
       for pattern in patterns:
         match = any(pattern.search(x) for x in paths)
         if not inverse and match:
