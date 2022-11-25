@@ -1246,7 +1246,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
         self._manifest_server = url
 
     def recursively_add_projects(project):
-      projects = self._projects.setdefault(project.review_name, [])
+      projects = self._projects.setdefault(project.name, [])
       if project.relpath is None:
         raise ManifestParseError(
             'missing path for %s in %s' %
@@ -1427,7 +1427,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                         relpath=name or None,
                         revisionExpr=m.revisionExpr,
                         revisionId=None)
-      self._projects[project.name] = [project]
+      self._projects[project.review_name] = [project]
       self._paths[project.relpath] = project
 
   def _ParseRemote(self, node):
