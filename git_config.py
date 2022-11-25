@@ -703,6 +703,7 @@ class Branch(object):
   def __init__(self, config, name):
     self._config = config
     self.name = name
+    print('DEBUGBranch name is' + name)
     self.merge = self._Get('merge')
 
     r = self._Get('remote')
