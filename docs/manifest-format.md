@@ -82,6 +82,7 @@ following DTD:
   <!ATTLIST project sync-s      CDATA #IMPLIED>
   <!ATTLIST project sync-tags   CDATA #IMPLIED>
   <!ATTLIST project upstream CDATA #IMPLIED>
+  <!ATTLIST project review_name CDATA #IMPLIED>
   <!ATTLIST project clone-depth CDATA #IMPLIED>
   <!ATTLIST project force-path CDATA #IMPLIED>
 
@@ -388,6 +389,11 @@ Attribute `sync-s`: Set to true to also sync sub-projects.
 Attribute `upstream`: Name of the Git ref in which a sha1
 can be found.  Used when syncing a revision locked manifest in
 -c mode to avoid having to sync the entire ref space.
+
+Attribute `review_name`: Name of the Project used to communicate with
+a gerrit review server. If specified, this value will override the project
+name with the specified name when uploading to gerrit. Used when the project
+replaced another upstream project in local manifests.
 
 Attribute `clone-depth`: Set the depth to use when fetching this
 project.  If specified, this value will override any value given

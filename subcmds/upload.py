@@ -241,8 +241,8 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
       commit_list = branch.commits
 
       destination = opt.dest_branch or project.dest_branch or project.revisionExpr
-      print('Upload project %s/ to remote branch %s%s:' %
-            (project.RelPath(local=opt.this_manifest_only), destination,
+      print('Upload project %s/ to remote project %s and branch %s%s:' %
+            (project.RelPath(local=opt.this_manifest_only),project.review_name, destination,
              ' (private)' if opt.private else ''))
       print('  branch %s (%2d commit%s, %s):' % (
           name,
@@ -578,7 +578,7 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
                  for (project, available) in pending}
     ret = 0
     for manifest in manifests.values():
-      pending_proj_names = [project.name for (project, available) in pending
+      pending_proj_names = [project.review_name for (project, available) in pending
                             if project.manifest.topdir == manifest.topdir]
       pending_worktrees = [project.worktree for (project, available) in pending
                            if project.manifest.topdir == manifest.topdir]

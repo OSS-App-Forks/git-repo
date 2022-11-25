@@ -1624,6 +1624,8 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
 
     upstream = node.getAttribute('upstream') or self._default.upstreamExpr
 
+    review_name = node.getAttribute('review_name') or name
+
     groups = ''
     if node.hasAttribute('groups'):
       groups = node.getAttribute('groups')
@@ -1660,6 +1662,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                       sync_tags=sync_tags,
                       clone_depth=clone_depth,
                       upstream=upstream,
+                      review_name=review_name,
                       parent=parent,
                       dest_branch=dest_branch,
                       use_git_worktrees=use_git_worktrees,

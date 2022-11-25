@@ -500,6 +500,7 @@ class Project(object):
                sync_tags=True,
                clone_depth=None,
                upstream=None,
+               review_name=None,
                parent=None,
                use_git_worktrees=False,
                is_derived=False,
@@ -549,6 +550,7 @@ class Project(object):
     self.sync_tags = sync_tags
     self.clone_depth = clone_depth
     self.upstream = upstream
+    self.review_name = review_name
     self.parent = parent
     # NB: Do not use this setting in __init__ to change behavior so that the
     # manifest.git checkout can inspect & change it after instantiating.  See
@@ -1050,7 +1052,7 @@ class Project(object):
       dest_branch = R_HEADS + dest_branch
 
     if not branch.remote.projectname:
-      branch.remote.projectname = self.name
+      branch.remote.projectname = self.review_name
       branch.remote.Save()
 
     url = branch.remote.ReviewUrl(self.UserEmail, validate_certs)
