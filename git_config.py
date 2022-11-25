@@ -685,8 +685,6 @@ class Remote(object):
       self._Set('pushurl', self.pushUrl)
     self._Set('review', self.review)
     self._Set('projectname', self.projectname)
-    print('DEBUG SAVE')
-    print(self.projectname)
     self._Set('fetch', list(map(str, self.fetch)))
 
   def _Set(self, key, value):
@@ -710,7 +708,7 @@ class Branch(object):
     r = self._Get('remote')
     if r:
       self.remote = self._config.GetRemote(r)
-      print('DEBUGBranch name is ' + str(r))
+      print('DEBUGBranch name is ' + type(r))
     else:
       self.remote = None
 
