@@ -234,6 +234,7 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
     print("but it should be" + str( project.review_name))
     print("so trying to set lol")
     remote._Set('projectname', project.review_name)
+    remote.projectname = project.review_name
     print("is it now " + str( remote.projectname))
 
     key = 'review.%s.autoupload' % remote.review

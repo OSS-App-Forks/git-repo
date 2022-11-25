@@ -264,6 +264,7 @@ class GitConfig(object):
   def GetBranch(self, name):
     """Get the branch.$name.* configuration values as an object.
     """
+    print("debug getbranchconf " + str(name))
     try:
       b = self._branches[name]
     except KeyError:
