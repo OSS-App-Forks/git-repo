@@ -377,6 +377,7 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
         project = branch.project
         name = branch.name
         remote = project.GetBranch(name).remote
+        remote.projectname = project.review_name
 
         key = "review.%s.autoupload" % remote.review
         answer = project.config.GetBoolean(key)
@@ -392,9 +393,10 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
                 opt.dest_branch or project.dest_branch or project.revisionExpr
             )
             print(
-                "Upload project %s/ to remote branch %s%s:"
+                "Upload project %s/ to remote project %s and branch %s%s:"
                 % (
-                    project.RelPath(local=opt.this_manifest_only),
+                    project.RelPath(local=opt.this_manifest_only)
+                    ,project.review_name,
                     destination,
                     " (private)" if opt.private else "",
                 )
@@ -786,7 +788,7 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
         ret = 0
         for manifest in manifests.values():
             pending_proj_names = [
-                project.name
+                project.review_name
                 for (project, available) in pending
                 if project.manifest.topdir == manifest.topdir
             ]

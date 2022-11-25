@@ -567,6 +567,7 @@ class Project:
         clone_depth=None,
         upstream=None,
         parent=None,
+        review_name=None,
         use_git_worktrees=False,
         is_derived=False,
         dest_branch=None,
@@ -621,6 +622,7 @@ class Project:
         self.clone_depth = clone_depth
         self.upstream = upstream
         self.parent = parent
+        self.review_name = review_name
         # NB: Do not use this setting in __init__ to change behavior so that the
         # manifest.git checkout can inspect & change it after instantiating.
         # See the XmlManifest init code for more info.
