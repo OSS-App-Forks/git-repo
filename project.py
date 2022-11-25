@@ -231,6 +231,10 @@ class ReviewableBranch(object):
                                  dest_branch=dest_branch,
                                  validate_certs=validate_certs,
                                  push_options=push_options)
+    print("UploadForReview ")
+    if self.name is not None:
+      print(str(self.name))
+    print(str(type(people)))
 
   def GetPublishedRefs(self):
     refs = {}
