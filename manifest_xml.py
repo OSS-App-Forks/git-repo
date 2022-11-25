@@ -1247,6 +1247,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
 
     def recursively_add_projects(project):
       projects = self._projects.setdefault(project.name, [])
+      print('DEBUGMANifest: ' + project.name)
       if project.relpath is None:
         raise ManifestParseError(
             'missing path for %s in %s' %
