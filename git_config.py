@@ -530,6 +530,7 @@ class Remote(object):
     self.pushUrl = self._Get('pushurl')
     self.review = self._Get('review')
     self.projectname = self._Get('projectname')
+    print('DEBUG Key is ' + self.projectname)
     self.fetch = list(map(RefSpec.FromString,
                           self._Get('fetch', all_keys=True)))
     self._review_url = None
@@ -691,7 +692,6 @@ class Remote(object):
 
   def _Get(self, key, all_keys=False):
     key = 'remote.%s.%s' % (self.name, key)
-    print('DEBUG Key is ' + key)
     return self._config.GetString(key, all_keys=all_keys)
 
 
