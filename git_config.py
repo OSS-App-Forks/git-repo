@@ -693,6 +693,7 @@ class Remote(object):
 
   def _Get(self, key, all_keys=False):
     key = 'remote.%s.%s' % (self.name, key)
+    print('DEBUG REMOTE' + self._config.GetString(key, all_keys=all_keys))
     return self._config.GetString(key, all_keys=all_keys)
 
 
@@ -708,7 +709,6 @@ class Branch(object):
     r = self._Get('remote')
     if r:
       self.remote = self._config.GetRemote(r)
-      print('DEBUGBranch name is ' + str(type(r)))
     else:
       self.remote = None
 
