@@ -2679,7 +2679,7 @@ class Project(object):
       remote.url = self.remote.url
       remote.pushUrl = self.remote.pushUrl
       remote.review = self.remote.review
-      remote.projectname = self.name
+      remote.projectname = self.review_name
 
       if self.worktree:
         remote.ResetFetch(mirror=False)
