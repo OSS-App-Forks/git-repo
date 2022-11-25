@@ -691,6 +691,7 @@ class Remote(object):
 
   def _Get(self, key, all_keys=False):
     key = 'remote.%s.%s' % (self.name, key)
+    print('DEBUG Key is ' + key)
     return self._config.GetString(key, all_keys=all_keys)
 
 
