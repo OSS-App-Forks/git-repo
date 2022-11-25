@@ -708,7 +708,7 @@ class Branch(object):
     r = self._Get('remote')
     if r:
       self.remote = self._config.GetRemote(r)
-      print('DEBUGBranch name is ' + type(r))
+      print('DEBUGBranch name is ' + str(type(r)))
     else:
       self.remote = None
 
