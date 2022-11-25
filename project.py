@@ -1052,8 +1052,10 @@ class Project(object):
       dest_branch = R_HEADS + dest_branch
 
     if not branch.remote.projectname:
-      branch.remote.projectname = self.review_name
+      branch.remote.projectname = self.name
       branch.remote.Save()
+    else:
+      print(str(branch.remote.projectname))
 
     url = branch.remote.ReviewUrl(self.UserEmail, validate_certs)
     if url is None:
