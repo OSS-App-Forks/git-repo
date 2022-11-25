@@ -1246,8 +1246,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
         self._manifest_server = url
 
     def recursively_add_projects(project):
-      projects = self._projects.setdefault(project.name, [])
-      print('DEBUGMANifest: ' + project.review_name)
+      projects = self._projects.setdefault(project.review_name, [])
       if project.relpath is None:
         raise ManifestParseError(
             'missing path for %s in %s' %
