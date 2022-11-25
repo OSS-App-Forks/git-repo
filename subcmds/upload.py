@@ -232,6 +232,9 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
 
     print("this is " + str(remote.projectname))
     print("but it should be" + str( project.review_name))
+    print("so trying to set lol")
+    remote._Set('projectname', project.review_name)
+    print("is it now " + str( remote.projectname))
 
     key = 'review.%s.autoupload' % remote.review
     answer = project.config.GetBoolean(key)
