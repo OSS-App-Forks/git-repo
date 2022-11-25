@@ -685,6 +685,9 @@ class Remote(object):
       self._Set('pushurl', self.pushUrl)
     self._Set('review', self.review)
     self._Set('projectname', self.projectname)
+    if self.projectname is not None:
+      print('DEBUGREMOTESAVE ' + self.projectname)
+
     self._Set('fetch', list(map(str, self.fetch)))
 
   def _Set(self, key, value):
