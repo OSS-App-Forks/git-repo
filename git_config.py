@@ -685,6 +685,8 @@ class Remote(object):
       self._Set('pushurl', self.pushUrl)
     self._Set('review', self.review)
     self._Set('projectname', self.projectname)
+    print('DEBUG SAVE')
+    print(self.projectname)
     self._Set('fetch', list(map(str, self.fetch)))
 
   def _Set(self, key, value):
@@ -703,12 +705,12 @@ class Branch(object):
   def __init__(self, config, name):
     self._config = config
     self.name = name
-    print('DEBUGBranch name is' + name)
     self.merge = self._Get('merge')
 
     r = self._Get('remote')
     if r:
       self.remote = self._config.GetRemote(r)
+      print('DEBUGBranch name is ' + str(r))
     else:
       self.remote = None
 
