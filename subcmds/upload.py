@@ -230,7 +230,7 @@ Gerrit Code Review:  https://www.gerritcodereview.com/
     name = branch.name
     remote = project.GetBranch(name).remote
 
-    print(str(remote))
+    print(str(remote.projectname))
 
     key = 'review.%s.autoupload' % remote.review
     answer = project.config.GetBoolean(key)
