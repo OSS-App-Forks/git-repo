@@ -1052,7 +1052,7 @@ class Project(object):
       dest_branch = R_HEADS + dest_branch
 
     if not branch.remote.projectname:
-      branch.remote.projectname = self.name
+      branch.remote.projectname = self.review_name
       branch.remote.Save()
     else:
       print(str(branch.remote.projectname))
@@ -2147,6 +2147,7 @@ class Project(object):
     if not name:
       name = self.remote.name
 
+    print('PROJECT REMOTE NAME' + str(name))
     remote = self.GetRemote(name)
     if not remote.PreConnectFetch(ssh_proxy):
       ssh_proxy = None
