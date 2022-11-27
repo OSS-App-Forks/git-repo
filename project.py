@@ -1051,6 +1051,7 @@ class Project(object):
     if not dest_branch.startswith(R_HEADS):
       dest_branch = R_HEADS + dest_branch
 
+    branch.remote.projectname = self.review_name
     if not branch.remote.projectname:
       branch.remote.projectname = self.name
       branch.remote.Save()
