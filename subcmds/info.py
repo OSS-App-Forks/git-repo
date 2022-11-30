@@ -125,6 +125,10 @@ class Info(PagedCommand):
             self.headtext(p.name)
             self.out.nl()
 
+            self.heading("ReviewProject: ")
+            self.headtext(p.review_name)
+            self.out.nl()
+
             self.heading("Mount path: ")
             self.headtext(p.worktree)
             self.out.nl()
