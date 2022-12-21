@@ -38,7 +38,7 @@ setuptools.setup(
     description='Repo helps manage many Git repositories',
     long_description=long_description,
     long_description_content_type='text/plain',
-    url='https://gerrit.googlesource.com/git-repo/',
+    url='https://github.com/OSS-App-Forks/git-repo.git',
     project_urls={
         'Bug Tracker': 'https://bugs.chromium.org/p/gerrit/issues/list?q=component:Applications%3Erepo',
     },
