@@ -39,7 +39,7 @@ setuptools.setup(
     description="Repo helps manage many Git repositories",
     long_description=long_description,
     long_description_content_type="text/plain",
-    url="https://gerrit.googlesource.com/git-repo/",
+    url="https://github.com/OSS-App-Forks/git-repo.git",
     project_urls={
         "Bug Tracker": "https://issues.gerritcodereview.com/issues?q=is:open%20componentid:1370071",  # noqa: E501
     },
