@@ -40,7 +40,7 @@ setuptools.setup(
     long_description_content_type='text/plain',
     url='https://github.com/OSS-App-Forks/git-repo.git',
     project_urls={
-        'Bug Tracker': 'https://bugs.chromium.org/p/gerrit/issues/list?q=component:repo',
+        'Bug Tracker': 'https://bugs.chromium.org/p/gerrit/issues/list?q=component:Applications%3Erepo',
     },
     # https://pypi.org/classifiers/
     classifiers=[
