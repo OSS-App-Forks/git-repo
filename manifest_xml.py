@@ -1617,7 +1617,10 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
 
     clone_depth = XmlInt(node, 'clone-depth')
     if clone_depth is not None and clone_depth <= 0:
-      raise ManifestParseError('%s: clone-depth must be greater than 0, not "%s"' %
+      if clone_depth == -1:
+        pass
+      else:
+        raise ManifestParseError('%s: clone-depth must be greater than 0, not "%s"' %
                                (self.manifestFile, clone_depth))
 
     dest_branch = node.getAttribute('dest-branch') or self._default.destBranchExpr
