@@ -2493,7 +2493,8 @@ class Project:
             self.EnableRepositoryExtension("partialclone", self.remote.name)
 
         if depth:
-            cmd.append("--depth=%s" % depth)
+            if not depth == -1:
+                cmd.append("--depth=%s" % depth)
         else:
             # If this repo has shallow objects, then we don't know which refs
             # have shallow objects or not. Tell git to unshallow all fetched
