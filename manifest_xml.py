@@ -591,6 +591,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
         return
 
       name = p.name
+      review_name = p.review_name
       relpath = p.relpath
       if parent:
         name = self._UnjoinName(parent.name, name)
@@ -599,6 +600,8 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
       e = doc.createElement('project')
       parent_node.appendChild(e)
       e.setAttribute('name', name)
+      if review_name != name:
+        e.setAttribute('review_name', review_name)
       if relpath != name:
         e.setAttribute('path', relpath)
       remoteName = None
