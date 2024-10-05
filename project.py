@@ -32,6 +32,7 @@ import urllib.parse
 
 from color import Coloring
 from error import DownloadError
+from error import GitAuthError
 from error import GitError
 from error import ManifestInvalidPathError
 from error import ManifestInvalidRevisionError
@@ -1697,6 +1698,8 @@ class Project:
                             project=self.name,
                         )
                     )
+                    return
+                syncbuf.later1(self, _doff, not verbose)
                 return
             elif pub == head:
                 # All published commits are merged, and thus we are a
@@ -2666,7 +2669,10 @@ class Project:
             # TODO(b/360889369#comment24): git may gc commits incorrectly.
             # Until the root cause is fixed, retry fetch with --refetch which
             # will bring the repository into a good state.
-            elif gitcmd.stdout and "could not parse commit" in gitcmd.stdout:
+            elif gitcmd.stdout and (
+                "could not parse commit" in gitcmd.stdout
+                or "unable to parse commit" in gitcmd.stdout
+            ):
                 cmd.insert(1, "--refetch")
                 print(
                     "could not parse commit error, retrying with refetch",
@@ -2699,6 +2705,33 @@ class Project:
                 )
                 # Continue right away so we don't sleep as we shouldn't need to.
                 continue
+            elif (
+                ret == 128
+                and gitcmd.stdout
+                and "fatal: could not read Username" in gitcmd.stdout
+            ):
+                # User needs to be authenticated, and Git wants to prompt for
+                # username and password.
+                print(
+                    "git requires authentication, but repo cannot perform "
+                    "interactive authentication. Check git credentials.",
+                    file=output_redir,
+                )
+                break
+            elif (
+                ret == 128
+                and gitcmd.stdout
+                and "remote helper 'sso' aborted session" in gitcmd.stdout
+            ):
+                # User needs to be authenticated, and Git wants to prompt for
+                # username and password.
+                print(
+                    "git requires authentication, but repo cannot perform "
+                    "interactive authentication.",
+                    file=output_redir,
+                )
+                raise GitAuthError(gitcmd.stdout)
+                break
             elif current_branch_only and is_sha1 and ret == 128:
                 # Exit code 128 means "couldn't find the ref you asked for"; if
                 # we're in sha1 mode, we just tried sync'ing from the upstream
