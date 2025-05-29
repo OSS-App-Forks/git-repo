@@ -238,9 +238,9 @@ def _build_env(
             s = p + " " + s
         env["GIT_CONFIG_PARAMETERS"] = s
     if "GIT_ALLOW_PROTOCOL" not in env:
-        env[
-            "GIT_ALLOW_PROTOCOL"
-        ] = "file:git:http:https:ssh:persistent-http:persistent-https:sso:rpc"
+        env["GIT_ALLOW_PROTOCOL"] = (
+            "file:git:http:https:ssh:persistent-http:persistent-https:sso:rpc"
+        )
     env["GIT_HTTP_USER_AGENT"] = user_agent.git
 
     if objdir:
@@ -313,12 +313,15 @@ class GitCommand:
             cwd = None
         command_name = cmdv[0]
         command.append(command_name)
-        # Need to use the --progress flag for fetch/clone so output will be
-        # displayed as by default git only does progress output if stderr is a
-        # TTY.
-        if sys.stderr.isatty() and command_name in ("fetch", "clone"):
-            if "--progress" not in cmdv and "--quiet" not in cmdv:
-                command.append("--progress")
+
+        if command_name in ("fetch", "clone"):
+            env["GIT_TERMINAL_PROMPT"] = "0"
+            # Need to use the --progress flag for fetch/clone so output will be
+            # displayed as by default git only does progress output if stderr is
+            # a TTY.
+            if sys.stderr.isatty():
+                if "--progress" not in cmdv and "--quiet" not in cmdv:
+                    command.append("--progress")
         command.extend(cmdv[1:])
 
         event_log = (
@@ -347,9 +350,9 @@ class GitCommand:
                         "Project": e.project,
                         "CommandName": command_name,
                         "Message": str(e),
-                        "ReturnCode": str(e.git_rc)
-                        if e.git_rc is not None
-                        else None,
+                        "ReturnCode": (
+                            str(e.git_rc) if e.git_rc is not None else None
+                        ),
                         "IsError": log_as_error,
                     }
                 )

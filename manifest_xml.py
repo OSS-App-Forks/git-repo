@@ -1017,9 +1017,9 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
 
     def SetManifestOverride(self, path):
         """Override manifestFile.  The caller must call Unload()"""
-        self._outer_client.manifest.manifestFileOverrides[
-            self.path_prefix
-        ] = path
+        self._outer_client.manifest.manifestFileOverrides[self.path_prefix] = (
+            path
+        )
 
     @property
     def UseLocalManifests(self):
@@ -1448,6 +1448,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
 
         repo_hooks_project = None
         enabled_repo_hooks = None
+        failed_revision_changes = []
         for node in itertools.chain(*node_list):
             if node.nodeName == "project":
                 project = self._ParseProject(node)
@@ -1474,6 +1475,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                     remote = self._get_remote(node)
                 dest_branch = node.getAttribute("dest-branch")
                 upstream = node.getAttribute("upstream")
+                base_revision = node.getAttribute("base-rev")
 
                 named_projects = self._projects[name]
                 if dest_path and not path and len(named_projects) > 1:
@@ -1487,6 +1489,13 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                     if groups:
                         p.groups.extend(groups)
                     if revision:
+                        if base_revision:
+                            if p.revisionExpr != base_revision:
+                                failed_revision_changes.append(
+                                    "extend-project name %s mismatch base "
+                                    "%s vs revision %s"
+                                    % (name, base_revision, p.revisionExpr)
+                                )
                         p.SetRevision(revision)
 
                     if remote_name:
@@ -1561,6 +1570,7 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
             if node.nodeName == "remove-project":
                 name = node.getAttribute("name")
                 path = node.getAttribute("path")
+                base_revision = node.getAttribute("base-rev")
 
                 # Name or path needed.
                 if not name and not path:
@@ -1574,6 +1584,13 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                 for projname, projects in list(self._projects.items()):
                     for p in projects:
                         if name == projname and not path:
+                            if base_revision:
+                                if p.revisionExpr != base_revision:
+                                    failed_revision_changes.append(
+                                        "remove-project name %s mismatch base "
+                                        "%s vs revision %s"
+                                        % (name, base_revision, p.revisionExpr)
+                                    )
                             del self._paths[p.relpath]
                             if not removed_project:
                                 del self._projects[name]
@@ -1581,6 +1598,17 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                         elif path == p.relpath and (
                             name == projname or not name
                         ):
+                            if base_revision:
+                                if p.revisionExpr != base_revision:
+                                    failed_revision_changes.append(
+                                        "remove-project path %s mismatch base "
+                                        "%s vs revision %s"
+                                        % (
+                                            p.relpath,
+                                            base_revision,
+                                            p.revisionExpr,
+                                        )
+                                    )
                             self._projects[projname].remove(p)
                             del self._paths[p.relpath]
                             removed_project = p.name
@@ -1599,6 +1627,13 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
                         "remove-project element specifies non-existent "
                         "project: %s" % node.toxml()
                     )
+
+        if failed_revision_changes:
+            raise ManifestParseError(
+                "revision base check failed, rebase patches and update "
+                "base revs for: ",
+                failed_revision_changes,
+            )
 
         # Store repo hooks project information.
         if repo_hooks_project:
@@ -2030,7 +2065,12 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
         path = path.rstrip("/")
         name = name.rstrip("/")
         relpath = self._JoinRelpath(parent.relpath, path)
-        gitdir = os.path.join(parent.gitdir, "subprojects", "%s.git" % path)
+        subprojects = os.path.join(parent.gitdir, "subprojects", f"{path}.git")
+        modules = os.path.join(parent.gitdir, "modules", path)
+        if platform_utils.isdir(subprojects):
+            gitdir = subprojects
+        else:
+            gitdir = modules
         objdir = os.path.join(
             parent.gitdir, "subproject-objects", "%s.git" % name
         )
@@ -2081,22 +2121,22 @@ https://gerrit.googlesource.com/git-repo/+/HEAD/docs/manifest-format.md
         # implementation:
         # https://eclipse.googlesource.com/jgit/jgit/+/9110037e3e9461ff4dac22fee84ef3694ed57648/org.eclipse.jgit/src/org/eclipse/jgit/lib/ObjectChecker.java#884
         BAD_CODEPOINTS = {
-            "\u200C",  # ZERO WIDTH NON-JOINER
-            "\u200D",  # ZERO WIDTH JOINER
-            "\u200E",  # LEFT-TO-RIGHT MARK
-            "\u200F",  # RIGHT-TO-LEFT MARK
-            "\u202A",  # LEFT-TO-RIGHT EMBEDDING
-            "\u202B",  # RIGHT-TO-LEFT EMBEDDING
-            "\u202C",  # POP DIRECTIONAL FORMATTING
-            "\u202D",  # LEFT-TO-RIGHT OVERRIDE
-            "\u202E",  # RIGHT-TO-LEFT OVERRIDE
-            "\u206A",  # INHIBIT SYMMETRIC SWAPPING
-            "\u206B",  # ACTIVATE SYMMETRIC SWAPPING
-            "\u206C",  # INHIBIT ARABIC FORM SHAPING
-            "\u206D",  # ACTIVATE ARABIC FORM SHAPING
-            "\u206E",  # NATIONAL DIGIT SHAPES
-            "\u206F",  # NOMINAL DIGIT SHAPES
-            "\uFEFF",  # ZERO WIDTH NO-BREAK SPACE
+            "\u200c",  # ZERO WIDTH NON-JOINER
+            "\u200d",  # ZERO WIDTH JOINER
+            "\u200e",  # LEFT-TO-RIGHT MARK
+            "\u200f",  # RIGHT-TO-LEFT MARK
+            "\u202a",  # LEFT-TO-RIGHT EMBEDDING
+            "\u202b",  # RIGHT-TO-LEFT EMBEDDING
+            "\u202c",  # POP DIRECTIONAL FORMATTING
+            "\u202d",  # LEFT-TO-RIGHT OVERRIDE
+            "\u202e",  # RIGHT-TO-LEFT OVERRIDE
+            "\u206a",  # INHIBIT SYMMETRIC SWAPPING
+            "\u206b",  # ACTIVATE SYMMETRIC SWAPPING
+            "\u206c",  # INHIBIT ARABIC FORM SHAPING
+            "\u206d",  # ACTIVATE ARABIC FORM SHAPING
+            "\u206e",  # NATIONAL DIGIT SHAPES
+            "\u206f",  # NOMINAL DIGIT SHAPES
+            "\ufeff",  # ZERO WIDTH NO-BREAK SPACE
         }
         if BAD_CODEPOINTS & path_codepoints:
             # This message is more expansive than reality, but should be fine.
